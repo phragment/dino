@@ -173,6 +173,7 @@ public class ConnectionManager : Object {
         stream.received_node.connect(() => {
             connection.last_activity = new DateTime.now_utc();
         });
+        print(@"[$(account.bare_jid)] new stream\n");
         connect_async.begin(account, stream);
         stream_opened(account, stream);
     }

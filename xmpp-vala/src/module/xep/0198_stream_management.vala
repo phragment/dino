@@ -141,6 +141,7 @@ public class Module : XmppStreamNegotiationModule, WriteNodeFunc {
                 } else if (node.name == "resumed") {
                     stream.get_flag(Flag.IDENTITY).resumed = true;
 
+                    print(@"[$(stream.remote_name)] stream resumed - recycling flags $(flags != null ? flags.size : -1)\n");
                     foreach (XmppStreamFlag flag in flags) {
                         stream.add_flag(flag);
                     }

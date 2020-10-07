@@ -101,6 +101,7 @@ public class Module : XmppStreamModule {
     }
 
     public override void attach(XmppStream stream) {
+        print(@"[$(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)] (Re)init modules\n");
         stream.stream_negotiated.connect(query_availability);
     }
 
@@ -112,8 +113,14 @@ public class Module : XmppStreamModule {
     public override string get_id() { return IDENTITY.id; }
 
     private async void query_availability(XmppStream stream) {
+        print(@"[$(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)] Querying http upload availability\n");
+        ArrayList<ServiceDiscovery.InfoResult?> info_results = new ArrayList<ServiceDiscovery.InfoResult?>();
+
         ServiceDiscovery.InfoResult? info_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, stream.remote_name);
+        info_results.add(info_result);
         bool available = check_ns_in_info(stream, stream.remote_name, info_result);
+        if (available) return;
+
         if (!available) {
             ServiceDiscovery.ItemsResult? items_result = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_items(stream, stream.remote_name);
             if (items_result == null) return;
@@ -126,9 +133,19 @@ public class Module : XmppStreamModule {
                     if ((i == 0 && !promising_upload_item) || (i == 1) && promising_upload_item) continue;
 
                     ServiceDiscovery.InfoResult? info_result2 = yield stream.get_module(ServiceDiscovery.Module.IDENTITY).request_info(stream, item.jid);
+                    info_results.add(info_result2);
                     bool available2 = check_ns_in_info(stream, item.jid, info_result2);
                     if (available2) return;
                 }
+            }
+        }
+
+        print(@"[$(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)] Didn't find http upload\n");
+        foreach (ServiceDiscovery.InfoResult? info_res in info_results) {
+            if (info_res == null) {
+                print("(null)\n");
+            } else {
+                print(info_res.iq.stanza.to_string() + "\n");
             }
         }
     }
@@ -150,8 +167,10 @@ public class Module : XmppStreamModule {
         if (ver_available || ver_0_available) {
             long max_file_size = extract_max_file_size(info_result);
             if (ver_0_available) {
+                print(@"[$(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)] Added flag (:0)\n");
                 stream.add_flag(new Flag(jid, NS_URI_0));
             } else if (ver_available) {
+                print(@"[$(stream.get_flag(Bind.Flag.IDENTITY).my_jid.bare_jid)] Added flag\n");
                 stream.add_flag(new Flag(jid, NS_URI));
             }
 
