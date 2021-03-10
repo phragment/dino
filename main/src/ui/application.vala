@@ -34,6 +34,8 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
         create_actions();
         add_main_option_entries(options);
 
+        Gtk.Settings.get_default().gtk_dialogs_use_header = use_csd();
+
         startup.connect(() => {
             if (print_version) {
                 print(@"Dino $(Dino.VERSION)\n");
@@ -247,9 +249,6 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
             }
         });
 
-        if (!use_csd()) {
-            dialog.set_titlebar(null);
-        }
         dialog.present();
     }
 

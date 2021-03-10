@@ -373,7 +373,7 @@ public string summarize_whitespaces_to_space(string s) {
 
 public void present_window(Window window) {
 #if GDK3_WITH_X11
-        Gdk.X11.Window x11window = window.get_window() as Gdk.X11.Window;
+    Gdk.X11.Window x11window = window.get_window() as Gdk.X11.Window;
     if (x11window != null) {
         window.present_with_time(Gdk.X11.get_server_time(x11window));
     } else {
