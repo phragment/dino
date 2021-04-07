@@ -96,6 +96,8 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         uint32 replace_id = content_notifications.has_key(conversation) ? content_notifications[conversation] : 0;
         HashTable<string, Variant> hash_table = new HashTable<string, Variant>(null, null);
         hash_table["image-data"] = yield get_conversation_icon(conversation);
+        hash_table["urgency"] = new Variant.byte(1);
+        hash_table["desktop-entry"] = new Variant.string(Application.get_default().get_application_id());
         string[] actions = new string[] {"default", "Open conversation"};
         try {
             uint32 notification_id = dbus_notifications.notify("Dino", replace_id, "", conversation_display_name, body, actions, hash_table, 0);
