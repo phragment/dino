@@ -99,6 +99,7 @@ public class Dino.Ui.FreeDesktopNotifier : NotificationProvider, Object {
         hash_table["urgency"] = new Variant.byte(1);
         hash_table["desktop-entry"] = new Variant.string(Dino.Application.get_default().get_application_id());
         hash_table["resident"] = new Variant.boolean(false);
+        hash_table["transient"] = new Variant.boolean(true);
         string[] actions = new string[] {"default", "Open conversation"};
         try {
             uint32 notification_id = dbus_notifications.notify("Dino", replace_id, "", conversation_display_name, body, actions, hash_table, 0);
