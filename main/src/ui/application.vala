@@ -52,10 +52,16 @@ public class Dino.Ui.Application : Gtk.Application, Dino.Application {
                 var desktop_env = Environment.get_variable("XDG_CURRENT_DESKTOP");
                 if (desktop_env == null || !desktop_env.down().contains("gnome")) {
                     if (this.active_window != null) {
-                        this.active_window.urgency_hint = true;
+                        if (!settings.indicator) {
+                            this.active_window.urgency_hint = true;
+                        }
                     }
                 }
             });
+
+            if (settings.indicator) {
+                notification_events.register_notification_provider(new IndicatorNotifier(stream_interactor));
+            }
         });
 
         activate.connect(() => {

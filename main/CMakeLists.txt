@@ -13,6 +13,7 @@ find_packages(MAIN_PACKAGES REQUIRED
     GTK3
     ICU
     Gspell
+    AppIndicator
 )
 
 set(RESOURCE_LIST
@@ -123,6 +124,7 @@ SOURCES
     src/ui/global_search.vala
     src/ui/notifier_freedesktop.vala
     src/ui/notifier_gnotifications.vala
+    src/ui/notifier_indicator.vala
     src/ui/settings_dialog.vala
     src/ui/main_window.vala
     src/ui/main_window_controller.vala
